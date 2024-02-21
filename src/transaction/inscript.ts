@@ -47,8 +47,8 @@ function chunkContent(data: Buffer) {
     const body = [];
     let start = 0;
     while (start < data.length) {
-        body.push(data.subarray(start, start + exports.MAX_CHUNK_SIZE));
-        start += exports.MAX_CHUNK_SIZE;
+        body.push(data.subarray(start, start + 520));
+        start += 520;
     }
     return body;
 }
