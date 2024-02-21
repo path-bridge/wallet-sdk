@@ -19,7 +19,8 @@ interface TxInput {
 }
 
 interface TxOutput {
-  address: string;
+  address?: string;
+  script?: Buffer;
   value: number;
 }
 
@@ -167,15 +168,22 @@ export class Transaction {
   calNetworkFee() {
     const psbt = this.createEstimatePsbt();
     const txSize = psbt.extractTransaction(true).virtualSize();
-    const fee = Math.ceil(txSize * this.feeRate);
+    const fee = Math.ceil(txSize * this.feeRate) + 1;
     return fee;
   }
 
-  addOutput(address: string, value: number) {
-    this.outputs.push({
-      address,
-      value,
-    });
+  addOutput(addressOrscript: string | Buffer, value: number) {
+    if (typeof addressOrscript === 'string') {
+      this.outputs.push({
+        address: addressOrscript,
+        value,
+      });
+    } else if (Buffer.isBuffer(addressOrscript)) {
+      this.outputs.push({
+        script: addressOrscript,
+        value,
+      });
+    }
   }
 
   getOutput(index: number) {
@@ -222,7 +230,11 @@ export class Transaction {
       }
     });
     this.outputs.forEach((v) => {
-      psbt.addOutput(v);
+      if (v.address) {
+        psbt.addOutput({ address: v.address, value: v.value });
+      } else {
+        psbt.addOutput({ script: v.script, value: v.value });
+      }
     });
     return psbt;
   }

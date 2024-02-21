@@ -80,32 +80,32 @@ export function amountToSaothis(val: any) {
 
 
 
-export function getAddressType(address: string, network: bitcoin.Network): AddressType {
-  let decodeBase58: bitcoin.address.Base58CheckResult | undefined;
-  let decodeBech32: bitcoin.address.Bech32Result | undefined;
-  try {
-    decodeBase58 = bitcoin.address.fromBase58Check(address);
-  } catch (e) { }
+// export function getAddressType(address: string, network: bitcoin.Network): AddressType {
+//   let decodeBase58: bitcoin.address.Base58CheckResult | undefined;
+//   let decodeBech32: bitcoin.address.Bech32Result | undefined;
+//   try {
+//     decodeBase58 = bitcoin.address.fromBase58Check(address);
+//   } catch (e) { }
 
-  if (decodeBase58) {
-    if (decodeBase58.version === network.pubKeyHash)
-      return AddressType.P2PKH
-    if (decodeBase58.version === network.scriptHash)
-      return AddressType.P2SH_P2WPKH
-  } else {
-    try {
-      decodeBech32 = bitcoin.address.fromBech32(address);
-    } catch (e) { }
+//   if (decodeBase58) {
+//     if (decodeBase58.version === network.pubKeyHash)
+//       return AddressType.P2PKH
+//     if (decodeBase58.version === network.scriptHash)
+//       return AddressType.P2SH_P2WPKH
+//   } else {
+//     try {
+//       decodeBech32 = bitcoin.address.fromBech32(address);
+//     } catch (e) { }
 
-    if (decodeBech32) {
-      if (decodeBech32.prefix !== network.bech32)
-        throw new Error(address + ' has an invalid prefix');
-      if (decodeBech32.version === 0) {
-        return AddressType.P2WPKH
-      } else if (decodeBech32.version === 1) {
-        return AddressType.P2TR
-      }
-    }
-  }
-  return AddressType.P2PKH
-}
+//     if (decodeBech32) {
+//       if (decodeBech32.prefix !== network.bech32)
+//         throw new Error(address + ' has an invalid prefix');
+//       if (decodeBech32.version === 0) {
+//         return AddressType.P2WPKH
+//       } else if (decodeBech32.version === 1) {
+//         return AddressType.P2TR
+//       }
+//     }
+//   }
+//   return AddressType.P2PKH
+// }
