@@ -2,7 +2,6 @@ node_modules
 .vscode/*
 dist/
 .DS_Store
-lib
 es 
 umd
 .history/*
