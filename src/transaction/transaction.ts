@@ -2,7 +2,7 @@ import { addressToScriptPk } from "../address";
 import { bitcoin } from "../bitcoin-core";
 import { UTXO_DUST } from "../constants";
 import { ErrorCodes, WalletUtilsError } from "../error";
-import { NetworkType, toPsbtNetwork } from "../network";
+// import { NetworkType, toPsbtNetwork } from "../network";
 import { AddressType, ToSignInput, UnspentOutput } from "../types";
 import { toXOnly } from "../utils";
 import { EstimateWallet } from "../wallet";
@@ -103,15 +103,15 @@ export class Transaction {
   public outputs: TxOutput[] = [];
   private changeOutputIndex = -1;
   public changedAddress: string;
-  private networkType: NetworkType;
+  private network: bitcoin.Network;
   private feeRate: number;
   private enableRBF = true;
   private _cacheNetworkFee = 0;
   private _cacheBtcUtxos: UnspentOutput[] = [];
   private _cacheToSignInputs: ToSignInput[] = [];
 
-  constructor(networkType: NetworkType, feeRate: number, changedAddress: string, enableRBF: boolean = true) {
-    this.networkType = networkType;
+  constructor(network: bitcoin.Network, feeRate: number, changedAddress: string, enableRBF: boolean = true) {
+    this.network = network;
     this.feeRate = feeRate;
     this.changedAddress = changedAddress;
     this.enableRBF = enableRBF;
@@ -217,7 +217,7 @@ export class Transaction {
   }
 
   toPsbt() {
-    const network = toPsbtNetwork(this.networkType);
+    const network = this.network;
     const psbt = new bitcoin.Psbt({ network });
     this.inputs.forEach((v, index) => {
       if (v.utxo.addressType === AddressType.P2PKH) {
@@ -240,7 +240,7 @@ export class Transaction {
   }
 
   clone() {
-    const tx = new Transaction(this.networkType, this.feeRate, this.changedAddress, this.enableRBF);
+    const tx = new Transaction(this.network, this.feeRate, this.changedAddress, this.enableRBF);
     tx.utxos = this.utxos.map((v) => Object.assign({}, v));
     tx.inputs = this.inputs.map((v) => v);
     tx.outputs = this.outputs.map((v) => v);
@@ -250,12 +250,12 @@ export class Transaction {
   createEstimatePsbt() {
     const estimateWallet = EstimateWallet.fromRandom(
       this.inputs[0].utxo.addressType,
-      this.networkType
+      this.network
     );
 
     const scriptPk = addressToScriptPk(
       estimateWallet.address,
-      this.networkType
+      this.network
     ).toString("hex");
 
     const tx = this.clone();

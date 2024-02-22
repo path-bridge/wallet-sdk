@@ -1,5 +1,5 @@
+import { bitcoin } from "../bitcoin-core";
 import { ErrorCodes, WalletUtilsError } from "../error";
-import { NetworkType } from "../network";
 import { Transaction } from "../transaction/transaction";
 import { utxoHelper } from "../transaction/utxo";
 import { ToSignInput, UnspentOutput } from "../types";
@@ -9,7 +9,7 @@ export function sendAtomicalsFT({
   assetUtxos,
   btcUtxos,
   toAddress,
-  networkType,
+  network,
   changeAssetAddress,
   sendAmount,
   changeAddress,
@@ -19,7 +19,7 @@ export function sendAtomicalsFT({
   assetUtxos: UnspentOutput[];
   btcUtxos: UnspentOutput[];
   toAddress: string;
-  networkType: NetworkType;
+  network: bitcoin.Network;
   changeAssetAddress: string;
   sendAmount: number;
   changeAddress: string;
@@ -38,7 +38,7 @@ export function sendAtomicalsFT({
     throw new WalletUtilsError(ErrorCodes.NOT_SAFE_UTXOS);
   }
 
-  const tx = new Transaction(networkType, feeRate, changeAddress, enableRBF);
+  const tx = new Transaction(network, feeRate, changeAddress, enableRBF);
 
   const toSignInputs: ToSignInput[] = [];
 

@@ -4,9 +4,9 @@ import {
   verifyMessageOfBIP322Simple,
   verifyMessageOfECDSA,
 } from "../../src/message";
-import { NetworkType } from "../../src/network";
 import { LocalWallet } from "../../src/wallet";
 import { expectThrowError } from "../utils";
+import { bitcoin } from "../../src/bitcoin-core";
 
 describe("verifyMessage", function () {
   it("ecdsa", async function () {
@@ -64,7 +64,7 @@ describe("verifyMessage", function () {
     const wallet = new LocalWallet(
       "L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k",
       AddressType.P2WPKH,
-      NetworkType.MAINNET
+      bitcoin.networks.bitcoin
     );
     const signature =
       "AkcwRAIgM2gBAQqvZX15ZiysmKmQpDrG83avLIT492QBzLnQIxYCIBaTpOaD20qRlEylyxFSeEA2ba9YOixpX8z46TSDtS40ASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=";
@@ -81,7 +81,7 @@ describe("verifyMessage", function () {
     const wallet = new LocalWallet(
       "L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k",
       AddressType.P2WPKH,
-      NetworkType.MAINNET
+      bitcoin.networks.bitcoin
     );
     const signature =
       "AkcwRAIgZRfIY3p7/DoVTty6YZbWS71bc5Vct9p9Fia83eRmw2QCICK/ENGfwLtptFluMGs2KsqoNSk89pO7F29zJLUx9a/sASECx/EgAxlkQpQ9hYjgGu6EBCPMVPwVIVJqO4XCsMvViHI=";
@@ -98,7 +98,7 @@ describe("verifyMessage", function () {
     const wallet = new LocalWallet(
       "L3VFeEujGtevx9w18HD1fhRbCH67Az2dpCymeRE1SoPK6XQtaN2k",
       AddressType.P2TR,
-      NetworkType.MAINNET
+      bitcoin.networks.bitcoin
     );
     const signature_now = wallet.signMessage(message, "bip322-simple");
     const signature_old =

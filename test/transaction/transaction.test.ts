@@ -2,7 +2,6 @@ import { Tapleaf, Taptree } from "bitcoinjs-lib/src/types";
 import { expect } from "chai";
 import { AddressType } from "../../src/types";
 import { ECPair, bitcoin } from "../../src/bitcoin-core";
-import { NetworkType } from "../../src/network";
 import { toXOnly, validator } from "../../src/utils";
 import { LocalWallet } from "../../src/wallet";
 
@@ -81,13 +80,13 @@ describe("sign transaction", function () {
     const wallet1 = new LocalWallet(
       signer1.toWIF(),
       AddressType.P2WPKH,
-      NetworkType.TESTNET
+      bitcoin.networks.testnet
     );
 
     const wallet2 = new LocalWallet(
       signer2.toWIF(),
       AddressType.P2WPKH,
-      NetworkType.TESTNET
+      bitcoin.networks.testnet
     );
     wallet1.signPsbt(psbtB, {
       toSignInputs: [{ index: 0, publicKey: wallet1.pubkey }],
@@ -195,13 +194,13 @@ describe("sign transaction", function () {
     const wallet1 = new LocalWallet(
       signer1.toWIF(),
       AddressType.P2WPKH,
-      NetworkType.TESTNET
+      bitcoin.networks.testnet
     );
 
     const wallet2 = new LocalWallet(
       signer2.toWIF(),
       AddressType.P2WPKH,
-      NetworkType.TESTNET
+      bitcoin.networks.testnet
     );
     wallet1.signPsbt(psbtB, {
       toSignInputs: [

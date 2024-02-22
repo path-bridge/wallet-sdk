@@ -1,16 +1,16 @@
-import { NetworkType } from "../network";
+import { bitcoin } from "../bitcoin-core";
 import { UnspentOutput } from "../types";
-export declare function sendInscription({ assetUtxo, btcUtxos, toAddress, networkType, changeAddress, feeRate, outputValue, enableRBF, enableMixed, }: {
+export declare function sendInscription({ assetUtxo, btcUtxos, toAddress, network, changeAddress, feeRate, outputValue, enableRBF, enableMixed, }: {
     assetUtxo: UnspentOutput;
     btcUtxos: UnspentOutput[];
     toAddress: string;
-    networkType: NetworkType;
+    network: bitcoin.Network;
     changeAddress: string;
     feeRate: number;
     outputValue: number;
     enableRBF?: boolean;
     enableMixed?: boolean;
 }): {
-    psbt: import("bitcoinjs-lib").Psbt;
+    psbt: bitcoin.Psbt;
     toSignInputs: import("../types").ToSignInput[];
 };

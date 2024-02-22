@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { AddressType } from "../../src/types";
 import { ErrorCodes } from "../../src/error";
-import { NetworkType } from "../../src/network";
 import { LocalWallet } from "../../src/wallet";
 import {
   dummySendInscription,
@@ -9,6 +8,7 @@ import {
   genDummyUtxo,
   genDummyUtxos,
 } from "./utils";
+import { bitcoin } from "../../src/bitcoin-core";
 
 describe("sendInscription", () => {
   beforeEach(() => {
@@ -26,14 +26,14 @@ describe("sendInscription", () => {
   testAddressTypes.forEach((addressType) => {
     const fromBtcWallet = LocalWallet.fromRandom(
       addressType,
-      NetworkType.MAINNET
+      bitcoin.networks.bitcoin
     );
     const fromAssetWallet = LocalWallet.fromRandom(
       addressType,
-      NetworkType.MAINNET
+      bitcoin.networks.bitcoin
     );
 
-    const toWallet = LocalWallet.fromRandom(addressType, NetworkType.MAINNET);
+    const toWallet = LocalWallet.fromRandom(addressType, bitcoin.networks.bitcoin);
 
     describe("basic " + addressType, function () {
       it("send one inscription with lower outputValue", async function () {

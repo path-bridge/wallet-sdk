@@ -6,7 +6,6 @@ import {
 import { ECPair, bitcoin } from "../bitcoin-core";
 import { HdKeyring, SimpleKeyring } from "../keyring";
 import { signMessageOfBIP322Simple } from "../message";
-import { NetworkType, toPsbtNetwork } from "../network";
 import {
   AddressType,
   AddressUserToSignInput,
@@ -23,29 +22,26 @@ export class LocalWallet implements AbstractWallet {
   pubkey: string;
   network: bitcoin.Network;
   addressType: AddressType;
-  networkType: NetworkType;
   scriptPk: string;
   constructor(
     wif: string,
     addressType: AddressType = AddressType.P2WPKH,
-    networkType: NetworkType = NetworkType.MAINNET
+    network: bitcoin.Network = bitcoin.networks.bitcoin
   ) {
-    const network = toPsbtNetwork(networkType);
     const keyPair = ECPair.fromWIF(wif, network);
     this.keyring = new SimpleKeyring([keyPair.privateKey.toString("hex")]);
     this.keyring.addAccounts(1);
     this.pubkey = keyPair.publicKey.toString("hex");
-    this.address = publicKeyToAddress(this.pubkey, addressType, networkType);
+    this.address = publicKeyToAddress(this.pubkey, addressType, network);
     this.network = network;
-    this.networkType = networkType;
     this.addressType = addressType;
 
-    this.scriptPk = publicKeyToScriptPk(this.pubkey, addressType, networkType);
+    this.scriptPk = publicKeyToScriptPk(this.pubkey, addressType, network);
   }
 
   static fromMnemonic(
     addressType: AddressType,
-    networkType: NetworkType,
+    network: bitcoin.Network,
     mnemonic: string,
     passPhrase?: string,
     hdPath?: string
@@ -55,23 +51,22 @@ export class LocalWallet implements AbstractWallet {
     const wallet = new LocalWallet(
       keyPair.privateKey.toString("hex"),
       addressType,
-      networkType
+      network
     );
     return wallet;
   }
 
   static fromRandom(
     addressType: AddressType = AddressType.P2WPKH,
-    networkType: NetworkType = NetworkType.MAINNET
+    network: bitcoin.Network = bitcoin.networks.bitcoin
   ) {
-    const network = toPsbtNetwork(networkType);
     const ecpair = ECPair.makeRandom({ network });
-    const wallet = new LocalWallet(ecpair.toWIF(), addressType, networkType);
+    const wallet = new LocalWallet(ecpair.toWIF(), addressType, network);
     return wallet;
   }
 
-  getNetworkType() {
-    return this.networkType;
+  getNetwork() {
+    return this.network;
   }
 
   private formatOptionsToSignInputs(
@@ -122,12 +117,11 @@ export class LocalWallet implements AbstractWallet {
         };
       });
     } else {
-      const networkType = this.getNetworkType();
-      const psbtNetwork = toPsbtNetwork(networkType);
+
 
       const psbt =
         typeof _psbt === "string"
-          ? bitcoin.Psbt.fromHex(_psbt as string, { network: psbtNetwork })
+          ? bitcoin.Psbt.fromHex(_psbt as string, { network: this.network })
           : (_psbt as bitcoin.Psbt);
       psbt.data.inputs.forEach((v, index) => {
         let script: any = null;
@@ -143,7 +137,7 @@ export class LocalWallet implements AbstractWallet {
         }
         const isSigned = v.finalScriptSig || v.finalScriptWitness;
         if (script && !isSigned) {
-          const address = scriptPkToAddress(script, this.networkType);
+          const address = scriptPkToAddress(script, this.network);
           if (accountAddress === address) {
             toSignInputs.push({
               index,
@@ -176,7 +170,7 @@ export class LocalWallet implements AbstractWallet {
         const tapInternalKey = toXOnly(Buffer.from(this.pubkey, "hex"));
         const { output } = bitcoin.payments.p2tr({
           internalPubkey: tapInternalKey,
-          network: toPsbtNetwork(this.networkType),
+          network: this.network,
         });
         if (v.witnessUtxo?.script.toString("hex") == output?.toString("hex")) {
           v.tapInternalKey = tapInternalKey;
@@ -204,7 +198,7 @@ export class LocalWallet implements AbstractWallet {
       return signMessageOfBIP322Simple({
         message: text,
         address: this.address,
-        networkType: this.networkType,
+        network: this.network,
         wallet: this,
       });
     } else {

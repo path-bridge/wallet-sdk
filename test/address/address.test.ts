@@ -5,7 +5,7 @@ import {
   isValidAddress,
   publicKeyToAddress,
 } from "../../src/address";
-import { NetworkType } from "../../src/network";
+import { bitcoin } from "../../src/bitcoin-core";
 
 const p2wpkh_data = {
   pubkey: "02b602ad190efb7b4f520068e3f8ecf573823d9e2557c5229231b4e14b79bbc0d8",
@@ -45,7 +45,7 @@ describe("address", function () {
       publicKeyToAddress(
         p2wpkh_data.pubkey,
         AddressType.P2WPKH,
-        NetworkType.MAINNET
+        bitcoin.networks.bitcoin
       )
     ).eq(p2wpkh_data.mainnet_address, "pubkey->p2wpkh mainnet");
 
@@ -53,7 +53,7 @@ describe("address", function () {
       publicKeyToAddress(
         p2wpkh_data.pubkey,
         AddressType.P2WPKH,
-        NetworkType.TESTNET
+        bitcoin.networks.testnet
       )
     ).eq(p2wpkh_data.testnet_address, "pubkey->p2wpkh testnet");
 
@@ -61,7 +61,7 @@ describe("address", function () {
       publicKeyToAddress(
         p2sh_data.pubkey,
         AddressType.P2SH_P2WPKH,
-        NetworkType.MAINNET
+       bitcoin.networks.bitcoin
       )
     ).eq(p2sh_data.mainnet_address, "pubkey->p2sh mainnet");
 
@@ -69,7 +69,7 @@ describe("address", function () {
       publicKeyToAddress(
         p2sh_data.pubkey,
         AddressType.P2SH_P2WPKH,
-        NetworkType.TESTNET
+        bitcoin.networks.testnet
       )
     ).eq(p2sh_data.testnet_address, "pubkey->p2sh testnet");
 
@@ -77,7 +77,7 @@ describe("address", function () {
       publicKeyToAddress(
         p2tr_data.pubkey,
         AddressType.P2TR,
-        NetworkType.MAINNET
+       bitcoin.networks.bitcoin
       )
     ).eq(p2tr_data.mainnet_address, "pubkey->p2tr mainnet");
 
@@ -85,7 +85,7 @@ describe("address", function () {
       publicKeyToAddress(
         p2tr_data.pubkey,
         AddressType.P2TR,
-        NetworkType.TESTNET
+        bitcoin.networks.testnet
       )
     ).eq(p2tr_data.testnet_address, "pubkey->p2tr testnet");
 
@@ -93,7 +93,7 @@ describe("address", function () {
       publicKeyToAddress(
         p2pkh_data.pubkey,
         AddressType.P2PKH,
-        NetworkType.MAINNET
+       bitcoin.networks.bitcoin
       )
     ).eq(p2pkh_data.mainnet_address, "pubkey->p2pkh mainnet");
 
@@ -101,94 +101,94 @@ describe("address", function () {
       publicKeyToAddress(
         p2pkh_data.pubkey,
         AddressType.P2PKH,
-        NetworkType.TESTNET
+        bitcoin.networks.testnet
       )
     ).eq(p2pkh_data.testnet_address, "pubkey->p2pkh testnet");
   });
   it("test function isValidAddress", async function () {
-    expect(isValidAddress(p2wpkh_data.mainnet_address, NetworkType.MAINNET)).eq(
+    expect(isValidAddress(p2wpkh_data.mainnet_address,bitcoin.networks.bitcoin)).eq(
       true,
       "p2wpkh mainnet address of mainnet should be valid"
     );
-    expect(isValidAddress(p2wpkh_data.testnet_address, NetworkType.TESTNET)).eq(
+    expect(isValidAddress(p2wpkh_data.testnet_address, bitcoin.networks.testnet)).eq(
       true,
       "p2wpkh testnet address of testnet should be invalid"
     );
-    expect(isValidAddress(p2sh_data.mainnet_address, NetworkType.MAINNET)).eq(
+    expect(isValidAddress(p2sh_data.mainnet_address,bitcoin.networks.bitcoin)).eq(
       true,
       "p2sh mainnet address of mainnet should be valid"
     );
-    expect(isValidAddress(p2sh_data.testnet_address, NetworkType.TESTNET)).eq(
+    expect(isValidAddress(p2sh_data.testnet_address, bitcoin.networks.testnet)).eq(
       true,
       "p2sh testnet address of testnet should be valid"
     );
-    expect(isValidAddress(p2tr_data.mainnet_address, NetworkType.MAINNET)).eq(
+    expect(isValidAddress(p2tr_data.mainnet_address,bitcoin.networks.bitcoin)).eq(
       true,
       "p2tr mainnet address of mainnet should be valid"
     );
-    expect(isValidAddress(p2tr_data.testnet_address, NetworkType.TESTNET)).eq(
+    expect(isValidAddress(p2tr_data.testnet_address, bitcoin.networks.testnet)).eq(
       true,
       "p2tr testnet address of testnet should be valid"
     );
-    expect(isValidAddress(p2pkh_data.mainnet_address, NetworkType.MAINNET)).eq(
+    expect(isValidAddress(p2pkh_data.mainnet_address,bitcoin.networks.bitcoin)).eq(
       true,
       "p2pkh mainnet address of mainnet should be valid"
     );
-    expect(isValidAddress(p2pkh_data.testnet_address, NetworkType.TESTNET)).eq(
+    expect(isValidAddress(p2pkh_data.testnet_address, bitcoin.networks.testnet)).eq(
       true,
       "p2pkh testnet address of testnet should be valid"
     );
-    expect(isValidAddress(p2pkh_data.mainnet_address, NetworkType.TESTNET)).eq(
+    expect(isValidAddress(p2pkh_data.mainnet_address, bitcoin.networks.testnet)).eq(
       false,
       "p2pkh mainnet address of testnet should be invalid"
     );
-    expect(isValidAddress(p2pkh_data.testnet_address, NetworkType.MAINNET)).eq(
+    expect(isValidAddress(p2pkh_data.testnet_address,bitcoin.networks.bitcoin)).eq(
       false,
       "p2pkh testnet address of mainnet should be invalid"
     );
     expect(
-      isValidAddress(invalid_data.mainnet_address, NetworkType.MAINNET)
+      isValidAddress(invalid_data.mainnet_address,bitcoin.networks.bitcoin)
     ).eq(false, "invalid mainnet address of mainnet should be invalid");
   });
 
   it("getAddressType", () => {
-    expect(getAddressType(p2wpkh_data.mainnet_address, NetworkType.MAINNET)).eq(
+    expect(getAddressType(p2wpkh_data.mainnet_address,bitcoin.networks.bitcoin)).eq(
       AddressType.P2WPKH,
       "mainnet address type should be p2wpkh"
     );
 
-    expect(getAddressType(p2wpkh_data.testnet_address, NetworkType.TESTNET)).eq(
+    expect(getAddressType(p2wpkh_data.testnet_address, bitcoin.networks.testnet)).eq(
       AddressType.P2WPKH,
       "testnet address type should be p2wpkh"
     );
 
-    expect(getAddressType(p2pkh_data.mainnet_address, NetworkType.MAINNET)).eq(
+    expect(getAddressType(p2pkh_data.mainnet_address,bitcoin.networks.bitcoin)).eq(
       AddressType.P2PKH,
       "mainnet address type should be p2pkh"
     );
 
-    expect(getAddressType(p2pkh_data.testnet_address, NetworkType.TESTNET)).eq(
+    expect(getAddressType(p2pkh_data.testnet_address, bitcoin.networks.testnet)).eq(
       AddressType.P2PKH,
       "testnet address type should be p2pkh"
     );
 
-    expect(getAddressType(p2tr_data.mainnet_address, NetworkType.MAINNET)).eq(
+    expect(getAddressType(p2tr_data.mainnet_address,bitcoin.networks.bitcoin)).eq(
       AddressType.P2TR,
       "mainnet address type should be p2tr"
     );
 
-    expect(getAddressType(p2tr_data.testnet_address, NetworkType.TESTNET)).eq(
+    expect(getAddressType(p2tr_data.testnet_address, bitcoin.networks.testnet)).eq(
       AddressType.P2TR,
       "testnet address type should be p2tr"
     );
 
     // TODO: P2SH OR P2SH_P2WPKH?
-    expect(getAddressType(p2sh_data.mainnet_address, NetworkType.MAINNET)).eq(
+    expect(getAddressType(p2sh_data.mainnet_address,bitcoin.networks.bitcoin)).eq(
       AddressType.P2SH_P2WPKH,
       "mainnet address type should be p2sh"
     );
 
-    expect(getAddressType(p2sh_data.testnet_address, NetworkType.TESTNET)).eq(
+    expect(getAddressType(p2sh_data.testnet_address, bitcoin.networks.testnet)).eq(
       AddressType.P2SH_P2WPKH,
       "testnet address type should be p2sh"
     );

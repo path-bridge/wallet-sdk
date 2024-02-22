@@ -1,15 +1,15 @@
-import { NetworkType } from "../network";
+import { bitcoin } from "../bitcoin-core";
 import { ToSignInput, UnspentOutput } from "../types";
-export declare function splitInscriptionUtxo({ btcUtxos, assetUtxo, networkType, changeAddress, feeRate, enableRBF, outputValue, }: {
+export declare function splitInscriptionUtxo({ btcUtxos, assetUtxo, network, changeAddress, feeRate, enableRBF, outputValue, }: {
     btcUtxos: UnspentOutput[];
     assetUtxo: UnspentOutput;
-    networkType: NetworkType;
+    network: bitcoin.Network;
     changeAddress: string;
     feeRate?: number;
     enableRBF?: boolean;
     outputValue?: number;
 }): {
-    psbt: import("bitcoinjs-lib").Psbt;
+    psbt: bitcoin.Psbt;
     toSignInputs: ToSignInput[];
     splitedCount: number;
 };

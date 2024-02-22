@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { AddressType } from "../../src/types";
 import { ErrorCodes } from "../../src/error";
-import { NetworkType } from "../../src/network";
 import { LocalWallet } from "../../src/wallet";
 import {
   dummySendAtomicalsFT,
@@ -9,6 +8,7 @@ import {
   genDummyAtomicalsFT,
   genDummyUtxo,
 } from "./utils";
+import { bitcoin } from "../../src/bitcoin-core";
 
 describe("send atomicals FT", () => {
   beforeEach(() => {
@@ -26,14 +26,14 @@ describe("send atomicals FT", () => {
   testAddressTypes.forEach((addressType) => {
     const fromBtcWallet = LocalWallet.fromRandom(
       addressType,
-      NetworkType.MAINNET
+      bitcoin.networks.bitcoin
     );
     const fromAssetWallet = LocalWallet.fromRandom(
       addressType,
-      NetworkType.MAINNET
+      bitcoin.networks.bitcoin
     );
 
-    const toWallet = LocalWallet.fromRandom(addressType, NetworkType.MAINNET);
+    const toWallet = LocalWallet.fromRandom(addressType, bitcoin.networks.bitcoin);
 
     describe("basic " + addressType, function () {
       it("send atomicals ft", async function () {

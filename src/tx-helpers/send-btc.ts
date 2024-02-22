@@ -1,6 +1,6 @@
+import { bitcoin } from "../bitcoin-core";
 import { UTXO_DUST } from "../constants";
 import { ErrorCodes, WalletUtilsError } from "../error";
-import { NetworkType } from "../network";
 import { Transaction } from "../transaction/transaction";
 import { utxoHelper } from "../transaction/utxo";
 import { ToSignInput, UnspentOutput } from "../types";
@@ -8,7 +8,7 @@ import { ToSignInput, UnspentOutput } from "../types";
 export function sendBTC({
   btcUtxos,
   tos,
-  networkType,
+  network,
   changeAddress,
   feeRate,
   enableRBF = true,
@@ -18,7 +18,7 @@ export function sendBTC({
     address: string;
     satoshis: number;
   }[];
-  networkType: NetworkType;
+  network: bitcoin.Network;
   changeAddress: string;
   feeRate: number;
   enableRBF?: boolean;
@@ -27,7 +27,7 @@ export function sendBTC({
     throw new WalletUtilsError(ErrorCodes.NOT_SAFE_UTXOS);
   }
 
-  const tx = new Transaction(networkType, feeRate, changeAddress, enableRBF);
+  const tx = new Transaction(network, feeRate, changeAddress, enableRBF);
 
   tos.forEach((v) => {
     tx.addOutput(v.address, v.satoshis);
@@ -43,13 +43,13 @@ export function sendBTC({
 export function sendAllBTC({
   btcUtxos,
   toAddress,
-  networkType,
+  network,
   feeRate,
   enableRBF = true,
 }: {
   btcUtxos: UnspentOutput[];
   toAddress: string;
-  networkType: NetworkType;
+  network: bitcoin.Network;
   feeRate: number;
   enableRBF?: boolean;
 }) {
@@ -57,7 +57,7 @@ export function sendAllBTC({
     throw new WalletUtilsError(ErrorCodes.NOT_SAFE_UTXOS);
   }
 
-  const tx = new Transaction(networkType, feeRate, null, enableRBF);
+  const tx = new Transaction(network, feeRate, null, enableRBF);
   tx.addOutput(toAddress, UTXO_DUST);
 
   const toSignInputs: ToSignInput[] = [];

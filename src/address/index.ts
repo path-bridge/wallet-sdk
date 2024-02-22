@@ -1,16 +1,11 @@
 import { bitcoin } from "../bitcoin-core";
-import { NetworkType, toPsbtNetwork } from "../network";
 import { AddressType } from "../types";
 
 /**
  * Convert public key to bitcoin payment object.
  */
-export function publicKeyToPayment(
-  publicKey: string,
-  type: AddressType,
-  networkType: NetworkType
-) {
-  const network = toPsbtNetwork(networkType);
+export function publicKeyToPayment(publicKey: string, type: AddressType, network: bitcoin.Network) {
+  // const network = toPsbtNetwork(networkType);
   if (!publicKey) return null;
   const pubkey = Buffer.from(publicKey, "hex");
   if (type === AddressType.P2PKH) {
@@ -44,12 +39,8 @@ export function publicKeyToPayment(
 /**
  * Convert public key to bitcoin address.
  */
-export function publicKeyToAddress(
-  publicKey: string,
-  type: AddressType,
-  networkType: NetworkType
-) {
-  const payment = publicKeyToPayment(publicKey, type, networkType);
+export function publicKeyToAddress(publicKey: string, type: AddressType, network: bitcoin.Network) {
+  const payment = publicKeyToPayment(publicKey, type, network);
   if (payment && payment.address) {
     return payment.address;
   } else {
@@ -60,33 +51,25 @@ export function publicKeyToAddress(
 /**
  * Convert public key to bitcoin scriptPk.
  */
-export function publicKeyToScriptPk(
-  publicKey: string,
-  type: AddressType,
-  networkType: NetworkType
-) {
-  const payment = publicKeyToPayment(publicKey, type, networkType);
+export function publicKeyToScriptPk(publicKey: string, type: AddressType, network: bitcoin.Network) {
+  const payment = publicKeyToPayment(publicKey, type, network);
   return payment.output.toString("hex");
 }
 
 /**
  * Convert bitcoin address to scriptPk.
  */
-export function addressToScriptPk(address: string, networkType: NetworkType) {
-  const network = toPsbtNetwork(networkType);
+export function addressToScriptPk(address: string, network: bitcoin.Network) {
   return bitcoin.address.toOutputScript(address, network);
 }
 
 /**
  * Check if the address is valid.
  */
-export function isValidAddress(
-  address: string,
-  networkType: NetworkType = NetworkType.MAINNET
-) {
+export function isValidAddress(address: string, network: bitcoin.Network = bitcoin.networks.bitcoin) {
   let error;
   try {
-    bitcoin.address.toOutputScript(address, toPsbtNetwork(networkType));
+    bitcoin.address.toOutputScript(address, network);
   } catch (e) {
     error = e;
   }
@@ -100,13 +83,8 @@ export function isValidAddress(
 /**
  * Get address type.
  */
-export function getAddressType(
-  address: string,
-  networkType: NetworkType = NetworkType.MAINNET
-): AddressType {
-  const network = toPsbtNetwork(networkType);
+export function getAddressType(address: string, network: bitcoin.Network = bitcoin.networks.bitcoin): AddressType {
   let type: AddressType;
-
   try {
     const decoded = bitcoin.address.fromBase58Check(address);
 
@@ -147,11 +125,7 @@ export function getAddressType(
 /**
  * Convert scriptPk to address.
  */
-export function scriptPkToAddress(
-  scriptPk: string | Buffer,
-  networkType: NetworkType = NetworkType.MAINNET
-) {
-  const network = toPsbtNetwork(networkType);
+export function scriptPkToAddress(scriptPk: string | Buffer, network: bitcoin.Network = bitcoin.networks.bitcoin) {
   try {
     const address = bitcoin.address.fromOutputScript(
       typeof scriptPk === "string" ? Buffer.from(scriptPk, "hex") : scriptPk,

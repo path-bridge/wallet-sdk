@@ -139,7 +139,7 @@ export function dummySendBTC({
   const { psbt, toSignInputs } = sendBTC({
     btcUtxos,
     tos,
-    networkType: wallet.networkType,
+    network: wallet.network,
     changeAddress: wallet.address,
     feeRate,
     enableRBF,
@@ -182,7 +182,7 @@ export function dummySendAllBTC({
     toAddress,
     feeRate,
     enableRBF,
-    networkType: wallet.networkType,
+    network: wallet.network,
   });
   wallet.signPsbt(psbt, { autoFinalized: true, toSignInputs });
 
@@ -232,7 +232,7 @@ export function dummySendInscription({
     toAddress,
     feeRate,
     outputValue,
-    networkType: btcWallet.networkType,
+    network: btcWallet.network,
     changeAddress: btcWallet.address,
     enableRBF,
     enableMixed,
@@ -300,7 +300,7 @@ export function dummySendInscriptions({
     assetUtxos,
     toAddress,
     feeRate,
-    networkType: btcWallet.networkType,
+    network: btcWallet.network,
     changeAddress: btcWallet.address,
     enableRBF,
   });
@@ -366,7 +366,7 @@ export function dummySplitOrdUtxo({
     assetUtxo,
     btcUtxos,
     feeRate,
-    networkType: btcWallet.networkType,
+    network: btcWallet.network,
     changeAddress: btcWallet.address,
     enableRBF,
     outputValue,
@@ -442,7 +442,7 @@ export function dummySendAtomicalsFT({
     assetUtxos: [assetUtxo],
     btcUtxos,
     toAddress,
-    networkType: btcWallet.networkType,
+    network: btcWallet.network,
     changeAddress: btcWallet.address,
     changeAssetAddress: assetWallet.address,
     feeRate,
@@ -512,7 +512,7 @@ export function dummySendAtomical({
     btcUtxos,
     toAddress,
     feeRate,
-    networkType: btcWallet.networkType,
+    network: btcWallet.network,
     changeAddress: btcWallet.address,
     enableRBF,
   });

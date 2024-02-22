@@ -1,12 +1,12 @@
-import { NetworkType } from "../network";
+import { bitcoin } from "../bitcoin-core";
 import { AbstractWallet } from "../wallet";
 /**
  * refference: https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki
  */
-export declare function signMessageOfBIP322Simple({ message, address, networkType, wallet, }: {
+export declare function signMessageOfBIP322Simple({ message, address, network, wallet, }: {
     message: string;
     address: string;
-    networkType: NetworkType;
+    network: bitcoin.Network;
     wallet: AbstractWallet;
 }): string;
-export declare function verifyMessageOfBIP322Simple(address: string, msg: string, signature: string, networkType?: NetworkType): boolean;
+export declare function verifyMessageOfBIP322Simple(address: string, msg: string, signature: string, network?: bitcoin.Network): boolean;

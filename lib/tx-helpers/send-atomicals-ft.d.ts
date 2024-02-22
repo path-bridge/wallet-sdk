@@ -1,16 +1,16 @@
-import { NetworkType } from "../network";
+import { bitcoin } from "../bitcoin-core";
 import { ToSignInput, UnspentOutput } from "../types";
-export declare function sendAtomicalsFT({ assetUtxos, btcUtxos, toAddress, networkType, changeAssetAddress, sendAmount, changeAddress, feeRate, enableRBF, }: {
+export declare function sendAtomicalsFT({ assetUtxos, btcUtxos, toAddress, network, changeAssetAddress, sendAmount, changeAddress, feeRate, enableRBF, }: {
     assetUtxos: UnspentOutput[];
     btcUtxos: UnspentOutput[];
     toAddress: string;
-    networkType: NetworkType;
+    network: bitcoin.Network;
     changeAssetAddress: string;
     sendAmount: number;
     changeAddress: string;
     feeRate: number;
     enableRBF?: boolean;
 }): {
-    psbt: import("bitcoinjs-lib").Psbt;
+    psbt: bitcoin.Psbt;
     toSignInputs: ToSignInput[];
 };

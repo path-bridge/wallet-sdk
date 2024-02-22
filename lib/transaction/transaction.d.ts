@@ -1,6 +1,5 @@
 /// <reference types="node" />
 import { bitcoin } from "../bitcoin-core";
-import { NetworkType } from "../network";
 import { ToSignInput, UnspentOutput } from "../types";
 interface TxInput {
     data: {
@@ -28,13 +27,13 @@ export declare class Transaction {
     outputs: TxOutput[];
     private changeOutputIndex;
     changedAddress: string;
-    private networkType;
+    private network;
     private feeRate;
     private enableRBF;
     private _cacheNetworkFee;
     private _cacheBtcUtxos;
     private _cacheToSignInputs;
-    constructor(networkType: NetworkType, feeRate: number, changedAddress: string, enableRBF?: boolean);
+    constructor(network: bitcoin.Network, feeRate: number, changedAddress: string, enableRBF?: boolean);
     addInputs(utxos: UnspentOutput[]): void;
     addInput(utxo: UnspentOutput): void;
     removeLastInput(): void;

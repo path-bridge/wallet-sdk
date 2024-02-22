@@ -1,6 +1,5 @@
 import { bitcoin } from "../bitcoin-core";
 import { SimpleKeyring } from "../keyring";
-import { NetworkType } from "../network";
 import { AddressType, SignPsbtOptions } from "../types";
 import { AbstractWallet } from "./abstract-wallet";
 /**
@@ -11,11 +10,10 @@ export declare class EstimateWallet implements AbstractWallet {
     address: string;
     pubkey: string;
     network: bitcoin.Network;
-    networkType: NetworkType;
     addressType: AddressType;
-    constructor(wif: string, networkType?: NetworkType, addressType?: AddressType);
-    static fromRandom(addressType?: AddressType, networkType?: NetworkType): EstimateWallet;
-    getNetworkType(): NetworkType;
+    constructor(wif: string, network?: bitcoin.Network, addressType?: AddressType);
+    static fromRandom(addressType?: AddressType, network?: bitcoin.Network): EstimateWallet;
+    getNetwork(): bitcoin.networks.Network;
     private formatOptionsToSignInputs;
     signPsbt(psbt: bitcoin.Psbt, opts?: SignPsbtOptions): bitcoin.Psbt;
     getPublicKey(): string;

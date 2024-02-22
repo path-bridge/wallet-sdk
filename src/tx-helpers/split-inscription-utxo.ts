@@ -1,6 +1,6 @@
+import { bitcoin } from "../bitcoin-core";
 import { UTXO_DUST } from "../constants";
 import { ErrorCodes, WalletUtilsError } from "../error";
-import { NetworkType } from "../network";
 import {
   InscriptionUnit,
   InscriptionUnspendOutput,
@@ -12,7 +12,7 @@ import { ToSignInput, UnspentOutput } from "../types";
 export function splitInscriptionUtxo({
   btcUtxos,
   assetUtxo,
-  networkType,
+  network,
   changeAddress,
   feeRate,
   enableRBF = true,
@@ -20,7 +20,7 @@ export function splitInscriptionUtxo({
 }: {
   btcUtxos: UnspentOutput[];
   assetUtxo: UnspentOutput;
-  networkType: NetworkType;
+  network: bitcoin.Network;
   changeAddress: string;
   feeRate?: number;
   enableRBF?: boolean;
@@ -34,7 +34,7 @@ export function splitInscriptionUtxo({
     throw new WalletUtilsError(ErrorCodes.NOT_SAFE_UTXOS);
   }
 
-  const tx = new Transaction(networkType, feeRate, changeAddress, enableRBF);
+  const tx = new Transaction(network, feeRate, changeAddress, enableRBF);
 
   const toSignInputs: ToSignInput[] = [];
 

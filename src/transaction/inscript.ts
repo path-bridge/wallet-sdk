@@ -2,7 +2,7 @@ import { toXOnly } from "bitcoinjs-lib/src/psbt/bip371";
 import { witnessStackToScriptWitness } from "bitcoinjs-lib/src/psbt/psbtutils";
 import { bitcoin } from "../bitcoin-core";
 import { Transaction } from "./transaction";
-import { NetworkType, toPsbtNetwork } from "../network";
+// import { NetworkType, toPsbtNetwork } from "../network";
 import { UnspentOutput } from "../types";
 import { UTXO_DUST } from "../constants";
 
@@ -70,8 +70,7 @@ function createInscriptionScript(xOnlyPublicKey: Buffer, inscription: Inscriptio
     ];
 }
 
-export function createCommitTxData(networkType: NetworkType, publicKey: Buffer, inscription: Inscription) {
-    const network = toPsbtNetwork(networkType);
+export function createCommitTxData(network: bitcoin.Network, publicKey: Buffer, inscription: Inscription) {
     const xOnlyPublicKey = toXOnly(publicKey);
     const script = createInscriptionScript(xOnlyPublicKey, inscription);
     const outputScript = bitcoin.script.compile(script);
@@ -99,8 +98,7 @@ export function createCommitTxData(networkType: NetworkType, publicKey: Buffer, 
     };
 }
 
-export function estimateRevealTxSize(networkType: NetworkType, publicKey: Buffer, commitTxData: CommitTxData, toAddress: string, amount: number) {
-    const network = toPsbtNetwork(networkType);
+export function estimateRevealTxSize(network: bitcoin.Network, publicKey: Buffer, commitTxData: CommitTxData, toAddress: string, amount: number) {
     const psbt = new bitcoin.Psbt({ network });
     const { scriptTaproot, tapLeafScript } = commitTxData;
     psbt.addInput({
@@ -122,7 +120,7 @@ export function estimateRevealTxSize(networkType: NetworkType, publicKey: Buffer
     return tx.virtualSize();
 }
 
-export function buildCommitTx(networkType: NetworkType,
+export function buildCommitTx(network: bitcoin.Network,
     publicKey: Buffer,
     commitTxDatas: CommitTxData[],
     inscriptions: Inscription[],
@@ -130,13 +128,13 @@ export function buildCommitTx(networkType: NetworkType,
     changeAddress: string,
     feeRate: number) {
 
-    const tx = new Transaction(networkType, feeRate, changeAddress);
+    const tx = new Transaction(network, feeRate, changeAddress);
 
     // const network = toPsbtNetwork(networkType);
 
     let totalOutAmount = 0;
     for (var i = 0; i < commitTxDatas.length; i++) {
-        const outputAmount = estimateRevealTxSize(networkType, publicKey, commitTxDatas[i], inscriptions[i].revealAddr, UTXO_DUST) * feeRate + UTXO_DUST;
+        const outputAmount = estimateRevealTxSize(network, publicKey, commitTxDatas[i], inscriptions[i].revealAddr, UTXO_DUST) * feeRate + UTXO_DUST;
         commitTxDatas[i].outputAmount = outputAmount;
         tx.addOutput(commitTxDatas[i].scriptTaproot.address, outputAmount);
         totalOutAmount += outputAmount;
@@ -163,9 +161,8 @@ export function buildCommitTx(networkType: NetworkType,
     throw new Error("insufficient");
 }
 
-export function buildRevealTx(networkType: NetworkType, commitTxData: CommitTxData,
+export function buildRevealTx(network: bitcoin.Network, commitTxData: CommitTxData,
     inscription: Inscription, commitTx: bitcoin.Transaction, index: number = 0) {
-    const network = toPsbtNetwork(networkType);
     const { scriptTaproot, tapLeafScript } = commitTxData;
     const psbt = new bitcoin.Psbt({ network });
     psbt.addInput({

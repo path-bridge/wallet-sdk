@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { AddressType, UnspentOutput } from "../../src/types";
 import { ErrorCodes } from "../../src/error";
-import { NetworkType } from "../../src/network";
 import { LocalWallet } from "../../src/wallet";
 import {
   dummySendAllBTC,
@@ -10,6 +9,7 @@ import {
   genDummyUtxo,
   genDummyUtxos,
 } from "./utils";
+import { bitcoin } from "../../src/bitcoin-core";
 
 describe("sendBTC", () => {
   beforeEach(() => {
@@ -25,8 +25,8 @@ describe("sendBTC", () => {
     AddressType.M44_P2WPKH, // deprecated
   ];
   testAddressTypes.forEach((addressType) => {
-    const fromWallet = LocalWallet.fromRandom(addressType, NetworkType.MAINNET);
-    const toWallet = LocalWallet.fromRandom(addressType, NetworkType.MAINNET);
+    const fromWallet = LocalWallet.fromRandom(addressType, bitcoin.networks.bitcoin);
+    const toWallet = LocalWallet.fromRandom(addressType, bitcoin.networks.bitcoin);
 
     describe("basic " + addressType, function () {
       it("huge balance", async function () {

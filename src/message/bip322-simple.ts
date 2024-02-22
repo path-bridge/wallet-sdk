@@ -1,10 +1,10 @@
 import { encode } from "varuint-bitcoin";
 import { addressToScriptPk, getAddressType } from "../address";
 import { bitcoin } from "../bitcoin-core";
-import { NetworkType, toPsbtNetwork } from "../network";
 import { AddressType } from "../types";
 import { schnorrValidator, validator } from "../utils";
 import { AbstractWallet } from "../wallet";
+
 function bip0322_hash(message: string) {
   const { sha256 } = bitcoin.crypto;
   const tag = "BIP0322-signed-message";
@@ -21,16 +21,16 @@ function bip0322_hash(message: string) {
 export function signMessageOfBIP322Simple({
   message,
   address,
-  networkType,
+  network,
   wallet,
 }: {
   message: string;
   address: string;
-  networkType: NetworkType;
+  network: bitcoin.Network;
   wallet: AbstractWallet;
 }) {
-  const outputScript = addressToScriptPk(address, networkType);
-  const addressType = getAddressType(address, networkType);
+  const outputScript = addressToScriptPk(address, network);
+  const addressType = getAddressType(address, network);
   const supportedTypes = [
     AddressType.P2WPKH,
     AddressType.P2TR,
@@ -92,9 +92,9 @@ export function verifyMessageOfBIP322Simple(
   address: string,
   msg: string,
   signature: string,
-  networkType: NetworkType = NetworkType.MAINNET
+  network: bitcoin.Network = bitcoin.networks.bitcoin
 ) {
-  const addressType = getAddressType(address, networkType);
+  const addressType = getAddressType(address, network);
   if (
     addressType === AddressType.P2WPKH ||
     addressType === AddressType.M44_P2WPKH
@@ -103,7 +103,7 @@ export function verifyMessageOfBIP322Simple(
       address,
       msg,
       signature,
-      networkType
+      network
     );
   } else if (
     addressType === AddressType.P2TR ||
@@ -113,7 +113,7 @@ export function verifyMessageOfBIP322Simple(
       address,
       msg,
       signature,
-      networkType
+      network
     );
   }
   return false;
@@ -123,9 +123,8 @@ function verifySignatureOfBIP322Simple_P2TR(
   address: string,
   msg: string,
   sign: string,
-  networkType: NetworkType = NetworkType.MAINNET
+  network: bitcoin.Network = bitcoin.networks.bitcoin
 ) {
-  const network = toPsbtNetwork(networkType);
   const outputScript = bitcoin.address.toOutputScript(address, network);
   const prevoutHash = Buffer.from(
     "0000000000000000000000000000000000000000000000000000000000000000",
@@ -177,9 +176,9 @@ function verifySignatureOfBIP322Simple_P2PWPKH(
   address: string,
   msg: string,
   sign: string,
-  networkType: NetworkType = NetworkType.MAINNET
+  network: bitcoin.Network = bitcoin.networks.bitcoin
 ) {
-  const network = toPsbtNetwork(networkType);
+  // const network = toPsbtNetwork(networkType);
   const outputScript = bitcoin.address.toOutputScript(address, network);
 
   const prevoutHash = Buffer.from(

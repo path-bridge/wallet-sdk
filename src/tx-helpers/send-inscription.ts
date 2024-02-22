@@ -1,5 +1,5 @@
+import { bitcoin } from "../bitcoin-core";
 import { ErrorCodes, WalletUtilsError } from "../error";
-import { NetworkType } from "../network";
 import { Transaction } from "../transaction/transaction";
 import { utxoHelper } from "../transaction/utxo";
 import { UnspentOutput } from "../types";
@@ -8,7 +8,7 @@ export function sendInscription({
   assetUtxo,
   btcUtxos,
   toAddress,
-  networkType,
+  network,
   changeAddress,
   feeRate,
   outputValue,
@@ -18,7 +18,7 @@ export function sendInscription({
   assetUtxo: UnspentOutput;
   btcUtxos: UnspentOutput[];
   toAddress: string;
-  networkType: NetworkType;
+  network: bitcoin.Network;
   changeAddress: string;
   feeRate: number;
   outputValue: number;
@@ -45,7 +45,7 @@ export function sendInscription({
     throw new WalletUtilsError(ErrorCodes.ASSET_MAYBE_LOST);
   }
 
-  const tx = new Transaction(networkType, feeRate, changeAddress, enableRBF);
+  const tx = new Transaction(network, feeRate, changeAddress, enableRBF);
   tx.addInput(assetUtxo);
   tx.addOutput(toAddress, outputValue);
 

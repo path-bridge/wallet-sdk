@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { AddressType } from "../../src/types";
-import { NetworkType } from "../../src/network";
 import { LocalWallet } from "../../src/wallet";
 import { dummySendInscriptions, expectFeeRate, genDummyUtxo } from "./utils";
+import { bitcoin } from "../../src/bitcoin-core";
 
 describe("sendInscriptions", () => {
   beforeEach(() => {
@@ -20,15 +20,15 @@ describe("sendInscriptions", () => {
   testAddressTypes.forEach((addressType) => {
     const fromBtcWallet = LocalWallet.fromRandom(
       addressType,
-      NetworkType.MAINNET
+      bitcoin.networks.bitcoin
     );
 
     const fromAssetWallet = LocalWallet.fromRandom(
       addressType,
-      NetworkType.MAINNET
+      bitcoin.networks.bitcoin
     );
 
-    const toWallet = LocalWallet.fromRandom(addressType, NetworkType.MAINNET);
+    const toWallet = LocalWallet.fromRandom(addressType, bitcoin.networks.bitcoin);
     describe("basic " + addressType, function () {
       it("send one inscription", async function () {
         const ret = dummySendInscriptions({
